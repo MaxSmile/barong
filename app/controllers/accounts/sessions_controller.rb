@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
 class Accounts::SessionsController < Devise::SessionsController
-  prepend_before_action :check_otp, only: [:create]
 
-  private
+  def create
+    account = Account.find_by_email(resource_params[:email])
 
-  def check_otp
-    account = Account.find_by_email(params[:account][:email])
-
-    unless account || account.verify_otp(params[:otp])
-      redirect_to new_account_session_path, alert: 'Wrong Google Auth code!'
+    if account.otp_enabled? && !account.verify_otp(params[:otp])
+      set_flash_message!(:alert, :wrong_otp_code)
+      redirect_to new_account_session_path
+      return
     end
+
+    super
   end
+
 end
+

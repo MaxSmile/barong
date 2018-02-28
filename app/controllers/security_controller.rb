@@ -6,7 +6,7 @@
 class SecurityController < ApplicationController
   # GET /security
   def enable
-    current_account.update!(otp_enabled: true)
+    current_account.update(otp_enabled: true)
   end
 
   def display_code

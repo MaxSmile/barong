@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'vault'
-
 #
 # Class Account
 #
@@ -28,8 +26,6 @@ class Account < ApplicationRecord
 
   def verify_otp(code)
     Vault.logical.write("totp/code/#{uid}", code: code).data[:valid]
-  rescue Vault::VaultError
-    raise 'Error. OTP service is not available'
   end
 
   def role
